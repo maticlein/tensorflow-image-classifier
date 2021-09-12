@@ -6,13 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
     <title>Ejemplo TensorFlow</title>
 </head>
 <body>
     <img id="img" crossorigin src="https://i.imgur.com/JlUvsxa.jpg" width="227" height="227">
     <button onclick="cambiarImagen()">Cambiar imagen</button>
     <div id="descripcion_imagen"></div>
+    <button id="clase-a" onclick="addExample(1)">Gatos</button>
+    <button id="clase-a" onclick="addExample(2)">Yo</button>
+    <button id="clase-a" onclick="addExample(3)">OK</button>
+    <button id="clase-a" onclick="addExample(4)">Rock</button>
     <div id="console"></div>
+    <div id="console2"></div>
     <video autoplay="" playsinline muted id="webcam" width="224" height="224"></video>
     <script src="scripts.js?v=12"></script>
 </body>

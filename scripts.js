@@ -3,6 +3,7 @@ let net;
 const imgEl = document.getElementById('img');
 const descEl = document.getElementById('descripcion_imagen');
 const webcamElement = document.getElementById('webcam');
+const classifier = knnClassifier.create();
 
 async function app(){
     net = await mobilenet.load();
@@ -14,7 +15,31 @@ async function app(){
     while(true){
         const img = await webcam.capture();
         const result = await net.classify(img);
-        document.getElementById('console').innerHTML = 'prediction:' + result[0].className + ' ' + 'probability:' + result[0].probability
+        const activation = net.infer(img, "conv_preds");
+        var result2;
+        try{
+            result2 = await classifier.predictClass(activation);
+        } catch(error){
+            result2 = {};
+        }
+
+        const classes = ["Untrained", "Gatos", "Yo", "OK", "Rock"]
+        
+        document.getElementById('console').innerText = `
+        prediction: ${result[0].className}\n
+        probability: ${result[0].probability}
+        `;
+
+        try{
+            document.getElementById('console2').innerText = `
+            prediction: ${classes[result2.label]}\n
+            probability: ${result2.confidences[result2.label]}
+            `;
+        ;
+        } catch(error){
+            document.getElementById("console2").innerText="Untrained";
+        }
+        
         img.dispose();
         await tf.nextFrame();
     }
@@ -22,6 +47,14 @@ async function app(){
 
 imgEl.onload = async function(){
     displayImagePrediction();
+}
+
+async function addExample(classId){
+    console.log('added example')
+    const img = await webcam.capture();
+    const activation = net.infer(img, true);
+    classifier.addExample(activation, classId);
+    img.dispose();
 }
 
 async function displayImagePrediction(){
